@@ -25,6 +25,5 @@ Adapun struktur folder project ini mengadopsi struktur dari Clean Architecture y
 
 
 ## Dokumentasi API
-Berikut adalah dokumentasi API versi local dengan menggunakan platform Swagger yang dapat diakses pada url dibawah ini,
-[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+Berikut adalah dokumentasi API versi local dengan menggunakan platform Swagger yang dapat diakses pada [link ini](http://localhost:8080/swagger/index.html).
 
