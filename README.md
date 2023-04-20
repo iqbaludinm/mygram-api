@@ -16,7 +16,7 @@ MyGram API merupakan sebuah service yang dapat melakukan pengoperasian CRUD (Cre
 Adapun struktur folder project ini mengadopsi struktur dari Clean Architecture yang secara sederhana merupakan konsep pemisahan kode kedalam layer yang saling terkait dan bergantung. Dengan begitu, maka pemeliharaan kode kedepannya akan mudah diubah, diuji, dan dipelihara. Berikut adalah deskripsi singkat dari setiap layer,
 
 | Layer                | Directory      |
-|:---------------------|:--------------:|
+|:--------------------:|:--------------:|
 | Frameworks & Drivers | app            |
 | Entities             | models         |
 | Interface            | handlers       |
