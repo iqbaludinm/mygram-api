@@ -25,4 +25,4 @@ Adapun struktur folder project ini mengadopsi struktur dari Clean Architecture y
 
 
 ## Dokumentasi API
-
+Berikut adalah dokumentasi API versi dengan menggunakan platform Swagger yang dapat diakses pada [link ini](https://mygram-api-production-ef65.up.railway.app/swagger/index.html).

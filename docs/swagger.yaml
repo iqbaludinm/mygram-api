@@ -123,7 +123,7 @@ definitions:
         example: 1
         type: integer
     type: object
-host: localhost:8080
+host: https://mygram-api-production-ef65.up.railway.app
 info:
   contact:
     email: iqbaludinm14@gmail.com

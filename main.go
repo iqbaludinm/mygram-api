@@ -26,7 +26,7 @@ func init() {
 // @contact.email  iqbaludinm14@gmail.com
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-// @host      localhost:8080
+// @host      https://mygram-api-production-ef65.up.railway.app
 // @BasePath  /api/v1
 func main() {
 	app.StartApp()
