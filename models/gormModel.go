@@ -17,7 +17,7 @@ func (model *GormModel) BeforeCreate(tx *gorm.DB) (err error) {
 	location, err := time.LoadLocation("Asia/Jakarta")
 	if err != nil {
 		log.Println("Error LoadLocation: ", err)
-		return time.Now()
+		return err
 	}
 	model.CreatedAt = time.Now().In(location)
 	model.UpdatedAt = time.Now().In(location)
@@ -28,7 +28,7 @@ func (model *GormModel) BeforeUpdate(tx *gorm.DB) (err error) {
 	location, err := time.LoadLocation("Asia/Jakarta")
 	if err != nil {
 		log.Println("Error LoadLocation: ", err)
-		return time.Now()
+		return err
 	}
 	model.UpdatedAt = time.Now().In(location)
 	return nil
