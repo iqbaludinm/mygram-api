@@ -9,11 +9,11 @@ import (
 
 // interface
 type UserService interface {
-	RegisterUser(user models.User) (res models.User, err error)
+	RegisterUser(user models.RegisterUser) (res models.User, err error)
 	LoginUser(user models.LoginUser) (res string, err error)
 }
 
-func (s *BaseService) RegisterUser(user models.User) (res models.User, err error) {
+func (s *BaseService) RegisterUser(user models.RegisterUser) (res models.User, err error) {
 	users := models.User{
 		Username: user.Username,
 		Email: user.Email,

@@ -16,9 +16,16 @@ type User struct {
 	SocialMedia *SocialMedia `json:"social_media,omitempty" gorm:"foreignKey:UserID"`
 }
 
+type RegisterUser struct {
+	Username string `json:"username" form:"username" example:"iqbaludinm" binding:"required"`
+	Email    string `json:"email" form:"email" binding:"required,email" example:"iqbal@mail.com"`
+	Password string `json:"password" form:"password" binding:"required" example:"iqbal123"`
+	Age int `json:"age" form:"age" binding:"required,gt=8" example:"22"`
+}
+
 type LoginUser struct {
-	Email    string `json:"email" form:"email" binding:"required,email"`
-	Password string `json:"password" form:"password" binding:"required"`
+	Email    string `json:"email" form:"email" binding:"required,email" example:"iqbal@mail.com"`
+	Password string `json:"password" form:"password" binding:"required" example:"iqbal123"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

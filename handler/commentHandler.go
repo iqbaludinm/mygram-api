@@ -12,6 +12,21 @@ import (
 	"github.com/iqbaludinm/mygram-api/models"
 )
 
+// CreateComment godoc
+// @Summary      Create Comment
+// @Description  Create a comment and store to database
+// @Tags         Comment
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        photo_id query int true "Photo ID"
+// @Param        photo body models.InsertComment true "Field for insert comment"
+// @Success      201  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Failure      401  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Router       /comments [post]
 func (h HttpServer) CreateComment(c *gin.Context) {
 	contentType := helpers.GetContentType(c)
 	var req models.InsertComment
@@ -47,7 +62,7 @@ func (h HttpServer) CreateComment(c *gin.Context) {
 			helpers.BadRequest(c, "Failed to Add New Comment", res)
 			return
 		}
-		helpers.ErrorWithData(c, err)
+		helpers.BadRequest(c, "Bad Request", err)
 		return
 	}
 
@@ -59,8 +74,22 @@ func (h HttpServer) CreateComment(c *gin.Context) {
 	helpers.Created(c, "Successfully Add Comment!", p)
 }
 
+// GetComments godoc
+// @Summary      Get All Comment by Photo Id
+// @Description  Get list of comments based on query params of photo id
+// @Tags         Comment
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        photo_id query int true "Photo ID"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Failure      401  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Router       /comments [get]
 func (h HttpServer) GetComments(c *gin.Context) {
-	photoID := c.Query("photo_id");
+	photoID := c.Query("photo_id")
 	if photoID == "" {
 		helpers.BadRequest(c, "The photo id doesn't exist")
 		return
@@ -81,6 +110,20 @@ func (h HttpServer) GetComments(c *gin.Context) {
 	helpers.OkWithData(c, "Success Retrive All Comments", res)
 }
 
+// GetCommentById godoc
+// @Summary      Get Comment By Id
+// @Description  Get a comment by id
+// @Tags         Comment
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        commentId path string true "Comment ID"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Failure      401  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Router       /comments/{commentId} [get]
 func (h HttpServer) GetCommentById(c *gin.Context) {
 	req, err := strconv.Atoi(c.Param("commentId"))
 	if err != nil {
@@ -94,12 +137,27 @@ func (h HttpServer) GetCommentById(c *gin.Context) {
 			helpers.NotFound(c, "Comment Not Found")
 			return
 		}
-		helpers.ErrorWithData(c, err)
+		helpers.BadRequest(c, "Bad Request", err)
 	}
 
 	helpers.OkWithData(c, "Success Retrive A Comment", res)
 }
 
+// UpdateComment godoc
+// @Summary      Update Comment
+// @Description  Update a comment
+// @Tags         Comment
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        commentId path string true "Comment Id"
+// @Param        comment body models.UpdateComment true "Update a Comment"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Failure      401  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Router       /comments/{commentId} [put]
 func (h HttpServer) UpdateComment(c *gin.Context) {
 	contentType := helpers.GetContentType(c)
 	var comment models.UpdateComment
@@ -125,7 +183,7 @@ func (h HttpServer) UpdateComment(c *gin.Context) {
 			helpers.BadRequest(c, "Failed to Update Comment!", res)
 			return
 		}
-		helpers.ErrorWithData(c, err)
+		helpers.BadRequest(c, "Bad Request", err)
 		return
 	}
 
@@ -135,7 +193,7 @@ func (h HttpServer) UpdateComment(c *gin.Context) {
 		return
 	}
 	res, err := h.app.UpdateComment(int64(param), comment)
-	if err != nil { 
+	if err != nil {
 		log.Println(err.Error())
 		if err.Error() == "record not found" {
 			helpers.NotFound(c, "Comment Not Found")
@@ -144,12 +202,26 @@ func (h HttpServer) UpdateComment(c *gin.Context) {
 			helpers.BadRequest(c, "You are not authorized to update this Comment")
 			return
 		}
-		helpers.ErrorWithData(c, err)
+		helpers.BadRequest(c, "Bad Request", err)
 		return
 	}
 	helpers.OkWithData(c, "Successfully Updated Comment!", res)
 }
 
+// DeleteComment godoc
+// @Summary      Delete Comment
+// @Description  Delete Comment
+// @Tags         Comment
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        commentId path string true "Comment ID"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Failure      401  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Router       /comments/{commentId} [delete]
 func (h HttpServer) DeleteComment(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	userID := uint(userData["id"].(float64))
@@ -160,7 +232,7 @@ func (h HttpServer) DeleteComment(c *gin.Context) {
 		return
 	}
 
-	_, er := h.app.DeleteComment(int64(req), userID)
+	res, er := h.app.DeleteComment(int64(req), userID)
 	if er != nil {
 		if er.Error() == "record not found" {
 			helpers.NotFound(c, "Comment Not Found")
@@ -169,8 +241,8 @@ func (h HttpServer) DeleteComment(c *gin.Context) {
 			helpers.BadRequest(c, "You are not authorized to delete this Comment")
 			return
 		}
-		helpers.ErrorWithData(c, err)
+		helpers.BadRequest(c, "Bad Request", err)
 		return
 	}
-	helpers.OkWithMessage(c, "Comment Deleted Successfully!")
+	helpers.OkWithData(c, "Comment Deleted Successfully!", res)
 }

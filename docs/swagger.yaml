@@ -1,4 +1,795 @@
+basePath: /api/v1
+definitions:
+  helpers.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  models.InsertComment:
+    properties:
+      message:
+        example: Nice Info!
+        type: string
+      photo_id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  models.InsertPhoto:
+    properties:
+      caption:
+        example: This is my second bootcamp experience
+        type: string
+      photo_url:
+        example: https://images/image-1.jpg
+        type: string
+      title:
+        example: My Bootcamp Journey in Hacktiv8
+        minLength: 3
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - photo_url
+    - title
+    type: object
+  models.InsertSocialMedia:
+    properties:
+      name:
+        example: Linkedin Muhammad Iqbaludin Zaky
+        type: string
+      social_media_url:
+        example: https://www.linkedin.com/in/iqbaludinm
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    required:
+    - social_media_url
+    type: object
+  models.LoginUser:
+    properties:
+      email:
+        example: iqbal@mail.com
+        type: string
+      password:
+        example: iqbal123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.RegisterUser:
+    properties:
+      age:
+        example: 22
+        type: integer
+      email:
+        example: iqbal@mail.com
+        type: string
+      password:
+        example: iqbal123
+        type: string
+      username:
+        example: iqbaludinm
+        type: string
+    required:
+    - age
+    - email
+    - password
+    - username
+    type: object
+  models.UpdateComment:
+    properties:
+      message:
+        example: I Wanna Hire You. Please, check your DM!
+        type: string
+      photo_id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  models.UpdatePhoto:
+    properties:
+      caption:
+        example: Hoho, now i am a Golang Developer
+        type: string
+      photo_url:
+        type: string
+      title:
+        example: Hacktiv8 Golang Class
+        minLength: 3
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  models.UpdateSocialMedia:
+    properties:
+      name:
+        type: string
+      social_media_url:
+        example: https://tinyurl.com/linkedin-iqbal
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+host: localhost:8080
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: iqbaludinm14@gmail.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample service for social-media.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: MyGram API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in the user with the provided email and password.
+      parameters:
+      - description: Credential for Login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: User Login to MyGram
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user in MyGram Service
+      parameters:
+      - description: Credential for Register
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: User Register to MyGram
+      tags:
+      - Auth
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Get list of comments based on query params of photo id
+      parameters:
+      - description: Photo ID
+        in: query
+        name: photo_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Comment by Photo Id
+      tags:
+      - Comment
+    post:
+      consumes:
+      - application/json
+      description: Create a comment and store to database
+      parameters:
+      - description: Photo ID
+        in: query
+        name: photo_id
+        required: true
+        type: integer
+      - description: Field for insert comment
+        in: body
+        name: photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.InsertComment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Comment
+      tags:
+      - Comment
+  /comments/{commentId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Comment
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Comment
+      tags:
+      - Comment
+    get:
+      consumes:
+      - application/json
+      description: Get a comment by id
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Comment By Id
+      tags:
+      - Comment
+    put:
+      consumes:
+      - application/json
+      description: Update a comment
+      parameters:
+      - description: Comment Id
+        in: path
+        name: commentId
+        required: true
+        type: string
+      - description: Update a Comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateComment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Comment
+      tags:
+      - Comment
+  /photos:
+    get:
+      consumes:
+      - application/json
+      description: Get list of photos with data relation (user)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Photos
+      tags:
+      - Photo
+    post:
+      consumes:
+      - application/json
+      description: Store a photo to database
+      parameters:
+      - description: Field for insert photo
+        in: body
+        name: photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.InsertPhoto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Photo
+      tags:
+      - Photo
+  /photos/{photoId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a photo
+      parameters:
+      - description: Photo ID
+        in: path
+        name: photoId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Photo
+      tags:
+      - Photo
+    get:
+      consumes:
+      - application/json
+      description: Get details of photo corresponding with input id
+      parameters:
+      - description: Photo ID
+        in: path
+        name: photoId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Photo by Id
+      tags:
+      - Photo
+    put:
+      consumes:
+      - application/json
+      description: Update a photo
+      parameters:
+      - description: Photo Id
+        in: path
+        name: photoId
+        required: true
+        type: string
+      - description: Update a photo
+        in: body
+        name: photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePhoto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Photo
+      tags:
+      - Photo
+  /social-medias:
+    get:
+      consumes:
+      - application/json
+      description: Get list of social media
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Social Media
+      tags:
+      - Social Media
+    post:
+      consumes:
+      - application/json
+      description: Add Social Media in User Data
+      parameters:
+      - description: Field for insert social media
+        in: body
+        name: socmed
+        required: true
+        schema:
+          $ref: '#/definitions/models.InsertSocialMedia'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Social Media
+      tags:
+      - Social Media
+  /social-medias/{socmedId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a Social Media
+      parameters:
+      - description: Social Media ID
+        in: path
+        name: socmedId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Social Media
+      tags:
+      - Social Media
+    get:
+      consumes:
+      - application/json
+      description: Get details of social media corresponding with social media id
+      parameters:
+      - description: Social Media ID
+        in: path
+        name: socmedId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Social Media by Id
+      tags:
+      - Social Media
+    put:
+      consumes:
+      - application/json
+      description: Update a social media
+      parameters:
+      - description: Social Media Id
+        in: path
+        name: socmedId
+        required: true
+        type: string
+      - description: Update a social media
+        in: body
+        name: socmed
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSocialMedia'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Social Media
+      tags:
+      - Social Media
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

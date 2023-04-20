@@ -4,19 +4,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/iqbaludinm/mygram-api/handler"
 	"github.com/iqbaludinm/mygram-api/middlewares"
+	
+	_ "github.com/iqbaludinm/mygram-api/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func RegisterAPI(r *gin.Engine, server handler.HttpServer) {
-	auth := r.Group("/auth")
+func RegisterAPI(router *gin.Engine, server handler.HttpServer) *gin.Engine {
+	
+	v1 := router.Group("/api/v1")
 	{
-		auth.POST("/login", server.Login)
-		auth.POST("/register", server.Register)
-	}
-
-	// r.GET("/mygram-docs")
-
-	v1 := r.Group("/api/v1")
-	{
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/login", server.Login)
+			auth.POST("/register", server.Register)
+		}
+		
 		v1.Use(middlewares.Authentication())
 		photo := v1.Group("/photos")
 		{
@@ -45,5 +48,7 @@ func RegisterAPI(r *gin.Engine, server handler.HttpServer) {
 			socmed.DELETE("/:socmedId", server.DeleteSocialMedia)
 		}
 	}
-
+	
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	return router
 }

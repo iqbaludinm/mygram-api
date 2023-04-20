@@ -10,61 +10,68 @@ var (
 	ErrNotFound = "record not found"
 )
 
-func Ok(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, data)
+type Response struct {
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
-func OkWithMessage(c *gin.Context, message string) {
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK, 
-		"message": message,
-	})
-}
-
-func OkWithData(c *gin.Context, message interface{}, data interface{}) {
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK, 
-		"message": message,
-		"data": data,
+func OkWithData(c *gin.Context, message string, data interface{}) {
+	c.JSON(http.StatusOK, Response{
+		Status:  http.StatusOK,
+		Message: message,
+		Data:    data,
 	})
 }
 
 func Created(c *gin.Context, message string, data interface{}) {
-	c.JSON(http.StatusCreated, gin.H{
-		"status": http.StatusCreated, 
-		"message": message,
-		"data": data,
-	})
-}
+	obj := Response{
+		Status:  http.StatusCreated,
+		Message: message,
+		Data:    data,
+	}
 
-func NoContent(c *gin.Context) {
-	c.JSON(http.StatusCreated, nil)
+	c.JSON(http.StatusCreated, obj)
 }
 
 func BadRequest(c *gin.Context, message string, data ...interface{}) {
-	obj := gin.H{"status": http.StatusBadRequest, "message": message}
-	if len(data) > 0 {
-		obj["data"] = data[0]
+	obj := Response{
+		Status:  http.StatusBadRequest,
+		Message: message,
 	}
+
+	if len(data) > 0 {
+		obj.Data = data[0]
+	}
+
 	c.JSON(http.StatusBadRequest, obj)
 }
 
 func NotFound(c *gin.Context, message string) {
-	c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": message})
+	c.JSON(http.StatusNotFound, Response{
+		Status:  http.StatusNotFound,
+		Message: message,
+		Data:    nil,
+	})
 }
 
 func InternalServerError(c *gin.Context, message string) {
-	c.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError, "message": message})
-}
-
-func ErrorWithData(c *gin.Context, err interface{}) {
-	c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "error": err})
+	c.JSON(http.StatusInternalServerError, Response{
+		Status:  http.StatusInternalServerError,
+		Message: message,
+		Data:    "Internal Server Error",
+	})
 }
 
 func Unauthorized(c *gin.Context, message string, err interface{}) {
-	c.JSON(http.StatusUnauthorized, gin.H{
-		"status" : "false",
-		"message": message,
-		"error": err,
+	c.AbortWithStatusJSON(http.StatusUnauthorized, Response{
+		Status:  http.StatusUnauthorized,
+		Message: message,
+		Data:    err,
 	})
+	// c.JSON(http.StatusUnauthorized, Response{
+	// 	Status:  http.StatusUnauthorized,
+	// 	Message: message,
+	// 	Data:    err,
+	// })
 }
