@@ -23,7 +23,6 @@ Adapun struktur folder project ini mengadopsi struktur dari Clean Architecture y
 | Usecases             | services       |
 | Repository           | repositories   |
 
----
 
 ## Dokumentasi API
 
